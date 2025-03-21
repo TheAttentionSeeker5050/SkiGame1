@@ -1,0 +1,2 @@
+# Ski Game 1
+This is a gaming project inspired in the game Ski Free from MS entertainment pack 3 for Windows 3.0 in 1991. Maybe some remember this game from their childhood at some point. I had a first look into this in Windows 95. I assume there was a port to to this operating system at some point. I want to make a recreation of this game using Godot, new game dynamics, more sensation of speed, all while keeping simmilar (but refined) looks and concept.
