@@ -1,0 +1,105 @@
+[gd_scene load_steps=9 format=3 uid="uid://66jkkdtl47rv"]
+
+[ext_resource type="Script" uid="uid://ck0chs4h05xq4" path="res://Scripts/Player.cs" id="1_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://xbmvihskhf47" path="res://Assets/Sprites/player.png" id="1_v0iea"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v0iea"]
+atlas = ExtResource("1_v0iea")
+region = Rect2(0, 0, 25, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cvnsp"]
+atlas = ExtResource("1_v0iea")
+region = Rect2(25, 0, 25, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6t5aa"]
+atlas = ExtResource("1_v0iea")
+region = Rect2(0, 50, 25, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgqql"]
+atlas = ExtResource("1_v0iea")
+region = Rect2(25, 50, 25, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fkybt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v0iea")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cvnsp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6t5aa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgqql")
+}],
+"loop": true,
+"name": &"_default",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"accellerate",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"descellerate",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"steer_left",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"steer_right",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x3wgy"]
+size = Vector2(24, 50)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_cvnsp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_fkybt")
+animation = &"_default"
+autoplay = "_default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_x3wgy")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="PlayerStatusTextSign" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -121.0
+offset_top = -161.0
+offset_right = 120.0
+offset_bottom = -121.0
+text = "Status"
+
+[node name="PlayerVelocityTextSign" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -120.0
+offset_top = -127.0
+offset_right = 119.0
+offset_bottom = -87.0
+text = "Velocity"
+
+[node name="PlayerDirectionTextSign" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -121.0
+offset_top = -88.0
+offset_right = 113.0
+offset_bottom = -52.0
+text = "Direction"
