@@ -1,8 +1,44 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg4xjl26a1kvm"]
+[gd_scene load_steps=3 format=3 uid="uid://cg4xjl26a1kvm"]
 
+[ext_resource type="Script" uid="uid://vydqtd3ldoh3" path="res://Scripts/TestGreenScreen.cs" id="1_tu8mt"]
 [ext_resource type="PackedScene" uid="uid://66jkkdtl47rv" path="res://Scenes/player.tscn" id="1_uck5r"]
 
 [node name="TEST_GREEN_SCREEN" type="Node2D"]
+script = ExtResource("1_tu8mt")
+
+[node name="BackgroundContainer" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="ColorRect" type="ColorRect" parent="BackgroundContainer"]
+offset_right = 1000.0
+offset_bottom = 1000.0
+
+[node name="TileMapContainer" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="SnowPathTileMapLayer" type="TileMapLayer" parent="TileMapContainer"]
+
+[node name="SnowTileMapLayer" type="TileMapLayer" parent="TileMapContainer"]
+
+[node name="FoliageTileMapLayer" type="TileMapLayer" parent="TileMapContainer"]
+
+[node name="JumpingPlatformTileMapLayer" type="TileMapLayer" parent="TileMapContainer"]
+
+[node name="RigidObstaclesTileMapLayer" type="TileMapLayer" parent="TileMapContainer"]
+
+[node name="NonRigidObstaclesTileMapLayer" type="TileMapLayer" parent="TileMapContainer"]
 
 [node name="Player" parent="." instance=ExtResource("1_uck5r")]
-position = Vector2(121, 154)
+unique_name_in_owner = true
+position = Vector2(500, 500)
+scale = Vector2(0.961496, 0.906645)
+
+[node name="BackgroundBoundsTextSign" type="RichTextLabel" parent="Player"]
+unique_name_in_owner = true
+visible = false
+offset_left = -155.0
+offset_top = 86.0
+offset_right = 236.0
+offset_bottom = 164.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "Sides of background T/B/L/R:"

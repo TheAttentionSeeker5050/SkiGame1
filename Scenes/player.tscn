@@ -68,6 +68,7 @@ animations = [{
 size = Vector2(24, 50)
 
 [node name="Player" type="CharacterBody2D"]
+editor_description = "This is the ski man, later it will look like one, for now it is just a blue square"
 script = ExtResource("1_cvnsp")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -79,6 +80,8 @@ autoplay = "_default"
 shape = SubResource("RectangleShape2D_x3wgy")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(0.993778, 1.01223)
 
 [node name="PlayerStatusTextSign" type="RichTextLabel" parent="."]
 unique_name_in_owner = true
@@ -86,6 +89,7 @@ offset_left = -121.0
 offset_top = -161.0
 offset_right = 120.0
 offset_bottom = -121.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
 text = "Status"
 
 [node name="PlayerVelocityTextSign" type="RichTextLabel" parent="."]
@@ -94,6 +98,7 @@ offset_left = -120.0
 offset_top = -127.0
 offset_right = 119.0
 offset_bottom = -87.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
 text = "Velocity"
 
 [node name="PlayerDirectionTextSign" type="RichTextLabel" parent="."]
@@ -102,4 +107,23 @@ offset_left = -121.0
 offset_top = -88.0
 offset_right = 113.0
 offset_bottom = -52.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
 text = "Direction"
+
+[node name="PlayerButtonPressTextSign" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -120.0
+offset_top = -55.0
+offset_right = 118.0
+offset_bottom = -20.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "Button Press"
+
+[node name="PlayerCoordinatesTextSign" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -121.0
+offset_top = 37.0
+offset_right = 120.0
+offset_bottom = 80.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "Player Coordinates"
