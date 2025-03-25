@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 
 public partial class TestGreenScreen : Node2D
@@ -13,7 +14,15 @@ public partial class TestGreenScreen : Node2D
     private const int NumOfFramesToCalcGenerateScenery = 15;
     private int FramesCounterToCalcGenerateScenery = 15;
 
-	private RichTextLabel BackgroundBoundsTextSign { get; set; }
+    // Add to TestGreenScreen class properties
+    private const float GenerationThreshold = 4000f; // Pixels from edge to trigger generation
+    private Rect2 currentCanvasItemsBounds;
+
+    private int BackgroundTop;
+    private int BackgroundBottom;
+
+    private const int rectHeight = 1000; // Match your ColorRect height
+    private const int rectWidth = 10000; // Match your ColorRect height
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -24,7 +33,6 @@ public partial class TestGreenScreen : Node2D
             Player = GetNode<CharacterBody2D>("Player");
             TileMapContainer = GetNode<Node2D>("TileMapContainer");
             BackgroundContainer = GetNode<Node2D>("BackgroundContainer");
-            GD.Print("Unique nodes loaded successfully");
 
         }
         catch (Exception ex)
@@ -39,28 +47,98 @@ public partial class TestGreenScreen : Node2D
         FramesCounterToCalcGenerateScenery++;
         if (FramesCounterToCalcGenerateScenery >= NumOfFramesToCalcGenerateScenery)
         {
+            UpdateCanvasBackgroundBounds();
+            CheckPlayerPosition();
             // Add populate canvas rectangles and tiles functions here
             FramesCounterToCalcGenerateScenery = 0;
         }
 	}
 
-    // TODO: Add a logic to add new white background rectangles when the player is about to reach the bounds of the world
-    public void GenerateNewBackgroundRectangles()
+    private void UpdateCanvasBackgroundBounds() 
     {
-        GD.Print("Generating new background rectangles");
-
-        var playerPosition = Player.Position;
+        var initialRectangle = BackgroundContainer.GetChild<ColorRect>(0);
+        // set initial width and height and position
+        initialRectangle.SetPosition(Vector2.Zero);
         
+        Vector2 newSize = Vector2.Zero; 
+        newSize.X = rectWidth;
+        newSize.Y = rectHeight;
+        if (newSize != Vector2.Zero)
+            initialRectangle.SetSize(newSize);
 
-        // We need to have a logic that gets all the items in the rectangle set, gets the lower and upper bounds as the max and min positions of the items, calculate the edges and sees if there is a need for a list, or work with signals.
-        // Perhaps we could store these edges into int variables and just make a rectangle as it is only snow and there is no need for somehting more refined, also the track is gonna bound the player anyways so it can only extend vertically
+        var rects = BackgroundContainer.GetChildren().Cast<ColorRect>();
+        currentCanvasItemsBounds = rects.Any() 
+            ? new Rect2(0, rects.Min(r => r.Position.Y), 
+                    GetViewportRect().Size.X, 
+                    rects.Max(r => r.Position.Y + rectHeight) - rects.Min(r => r.Position.Y))
+            : new Rect2();
     }
 
+    private void CheckPlayerPosition()
+    {
+        if(Player == null) return;
+
+        var playerY = Player.Position.Y;
+        var bufferZone = currentCanvasItemsBounds.Size.Y * 0.2f; // 20% of total height
+
+        // Detect approach to top/bottom with buffer zone
+        if(playerY < currentCanvasItemsBounds.Position.Y + GenerationThreshold || playerY > currentCanvasItemsBounds.End.Y - GenerationThreshold)
+        {
+            GenerateNewBackgroundCanvasRectangles();
+        }
+    }
+    
+    public void GenerateNewBackgroundCanvasRectangles()
+    {
+        // -------------------------------------------------------------
+        // Generate new Color Rect and add it to the BackgroundContainer
+        // -------------------------------------------------------------
+
+        // Get existing rectangles sorted by Y position
+        var rects = BackgroundContainer.GetChildren()
+                .Cast<ColorRect>()
+                .OrderBy(r => r.Position.Y)
+                .ToList();
+        
+        // Calculate needed expansion direction
+        bool needsTopRectangleRemoval = Player.Position.Y > currentCanvasItemsBounds.Position.Y + GenerationThreshold;
+        bool needsBottomExpansion = Player.Position.Y > currentCanvasItemsBounds.End.Y - GenerationThreshold;
+
+        // Deleting old background rectangles as the player advances
+        if (needsTopRectangleRemoval) {
+            RemoveFirstBackgroundRect();
+        }
+        
+        // Adding new background rectangles as the player advances
+        if (needsBottomExpansion)
+        {
+            float newY = rects.Any() ? rects.Last().Position.Y + rectHeight : 0;
+            CreateBackgroundRect(newY);
+        }
+        
+        UpdateCanvasBackgroundBounds();
+    }
+
+    private void CreateBackgroundRect(float yPosition)
+    {
+        var newRect = new ColorRect
+        {
+            Size = new Vector2(rectWidth, rectHeight),
+            Position = new Vector2(0, yPosition),
+            Color = Colors.White
+        };
+        
+        BackgroundContainer.AddChild(newRect);
+    }
+
+    private void RemoveFirstBackgroundRect()
+    {
+        BackgroundContainer.GetChild(0).QueueFree();
+    }
 
     // TODO: Add a logic to programatically add up new tiles as the player advances into the track
     public void GenerateNewTiles()
     {
-        GD.Print("Propping tilesets");
         var playerPosition = Player.Position;
     }
 
