@@ -79,16 +79,15 @@ public partial class TestGreenScreen : Node2D
         if(Player == null) return;
 
         var playerY = Player.Position.Y;
-        var bufferZone = currentCanvasItemsBounds.Size.Y * 0.2f; // 20% of total height
 
         // Detect approach to top/bottom with buffer zone
         if(playerY < currentCanvasItemsBounds.Position.Y + GenerationThreshold || playerY > currentCanvasItemsBounds.End.Y - GenerationThreshold)
         {
-            GenerateNewBackgroundCanvasRectangles();
+            UpdateLevelBackgroundAndTiles();
         }
     }
     
-    public void GenerateNewBackgroundCanvasRectangles()
+    public void UpdateLevelBackgroundAndTiles()
     {
         // -------------------------------------------------------------
         // Generate new Color Rect and add it to the BackgroundContainer
@@ -99,21 +98,19 @@ public partial class TestGreenScreen : Node2D
                 .Cast<ColorRect>()
                 .OrderBy(r => r.Position.Y)
                 .ToList();
-        
-        // Calculate needed expansion direction
-        bool needsTopRectangleRemoval = Player.Position.Y > currentCanvasItemsBounds.Position.Y + GenerationThreshold;
-        bool needsBottomExpansion = Player.Position.Y > currentCanvasItemsBounds.End.Y - GenerationThreshold;
 
         // Deleting old background rectangles as the player advances
-        if (needsTopRectangleRemoval) {
+        if (CanRemoveOldMapSection()) {
             RemoveFirstBackgroundRect();
+            RemoveOldTiles();
         }
         
         // Adding new background rectangles as the player advances
-        if (needsBottomExpansion)
+        if (CanAddNewMapSection())
         {
             float newY = rects.Any() ? rects.Last().Position.Y + rectHeight : 0;
             CreateBackgroundRect(newY);
+            GenerateNewTiles();
         }
         
         UpdateCanvasBackgroundBounds();
@@ -136,13 +133,30 @@ public partial class TestGreenScreen : Node2D
         BackgroundContainer.GetChild(0).QueueFree();
     }
 
-    // TODO: Add a logic to programatically add up new tiles as the player advances into the track
+    // TODO: Add a logic to programatically add up new tiles as the player advances into the track and delete old ones
     public void GenerateNewTiles()
     {
+        GD.Print("Generating new tiles");
         var playerPosition = Player.Position;
     }
 
-    // TODO: Add a logic to programmatically delete bg rectangles and tiles from tilemap layer as the players advance: Keep in mind that players are instances nodes that have position properties, so it is easy, the player most behind's position tells what to delete from the start of the track. No need to go back as that is not possible in this game.
+    public void RemoveOldTiles()
+    {
+        GD.Print("Removing old tiles");
+    }
+
+    // -------------------------------------------------------------
+    // TODO: Pick an name for this section -------------------------
+    // -------------------------------------------------------------
+    private bool CanRemoveOldMapSection()
+    {
+        return Player.Position.Y > currentCanvasItemsBounds.Position.Y + GenerationThreshold;
+    }
+
+    private bool CanAddNewMapSection()
+    {
+        return Player.Position.Y > currentCanvasItemsBounds.End.Y - GenerationThreshold;
+    }
 
     // TODO: Add a logic to make a end part of the track, as it is being created programmatically we need to generate a finish line, or whatever the game mode later on consists of.
 
